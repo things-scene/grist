@@ -1,2 +1,3 @@
 import grist from "./grist";
-export default [grist];
+import gristAction from "./grist-action";
+export default [grist, gristAction];

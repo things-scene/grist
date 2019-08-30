@@ -8,25 +8,25 @@ const NATURE = {
   rotatable: true,
   properties: [
     {
-      type: "string",
-      label: "mode",
-      name: "mode"
+      type: 'string',
+      label: 'mode',
+      name: 'mode'
     },
     {
-      type: "textarea",
-      label: "config",
-      name: "config"
+      type: 'textarea',
+      label: 'config',
+      name: 'config'
     }
   ]
-};
+}
 
-import { Component, HTMLOverlayElement, error } from "@hatiolab/things-scene";
+import { Component, HTMLOverlayElement, error } from '@hatiolab/things-scene'
 
-import "@things-factory/grist-ui";
+import '@things-factory/grist-ui'
 
 export default class Grist extends HTMLOverlayElement {
   static get nature() {
-    return NATURE;
+    return NATURE
   }
 
   oncreate_element(grist) {
@@ -45,13 +45,13 @@ export default class Grist extends HTMLOverlayElement {
             active: Math.round(Math.random() * 2) % 2 ? true : false,
             createdAt: Date.now(),
             updatedAt: Date.now()
-          };
+          }
         })
-    };
+    }
   }
 
   dispose() {
-    super.dispose();
+    super.dispose()
   }
 
   /*
@@ -61,12 +61,12 @@ export default class Grist extends HTMLOverlayElement {
    * ThingsComponent state => HTML element properties
    */
   setElementProperties(grist) {
-    var { mode } = this.state;
+    var { mode } = this.state
 
-    grist.mode = mode;
+    grist.mode = mode
 
-    grist.config = this.config;
-    grist.data = this.data;
+    grist.config = this.config
+    grist.data = this.data
   }
 
   /*
@@ -74,26 +74,26 @@ export default class Grist extends HTMLOverlayElement {
    * 변화에 따른 기본적인 html 속성이 super.reposition()에서 진행되고, 그 밖의 작업이 필요할 때, 오버라이드 한다.
    */
   reposition() {
-    super.reposition();
+    super.reposition()
   }
 
   get config() {
-    var { config, data } = this.state;
+    var { config, data } = this.state
 
-    if (typeof config !== "object") {
+    if (typeof config !== 'object') {
       try {
-        eval(`config = ${config}`);
+        eval(`config = ${config}`)
       } catch (e) {
-        scene.error(e);
+        scene.error(e)
       }
     }
 
-    return config;
+    return config
   }
 
   get tagName() {
-    return "data-grist";
+    return 'data-grist'
   }
 }
 
-Component.register("grist", Grist);
+Component.register('grist', Grist)
