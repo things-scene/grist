@@ -68,10 +68,16 @@ export default class GristAction extends ValueHolder(RectPath(Polygon)) {
         grist.commit()
         break
       case ACTIONS.GET_SELECTED:
-        this.set('data', grist.selected)
+        this.set('data', {
+          timestamp: new Date(),
+          records: grist.selected
+        })
         break
       case ACTIONS.GET_DIRTY:
-        this.set('data', grist.dirtyRecords)
+        this.set('data', {
+          timestamp: new Date(),
+          records: grist.dirtyRecords
+        })
         break
     }
   }
