@@ -66,7 +66,13 @@ export default class Grist extends HTMLOverlayElement {
     grist.mode = mode
 
     grist.config = this.config
-    grist.data = this.data
+    grist.data =
+      this.data instanceof Array
+        ? {
+            total: this.data.length,
+            records: this.data
+          }
+        : this.data
   }
 
   /*

@@ -32,6 +32,11 @@ const NATURE = {
           }
         ]
       }
+    },
+    {
+      type: 'string',
+      label: 'value',
+      name: 'value'
     }
   ]
 }
@@ -42,15 +47,9 @@ export const ACTIONS = {
   GET_DIRTY: 'getDirtyRows'
 }
 
-import {
-  Component,
-  ValueHolder,
-  RectPath,
-  Polygon,
-  error
-} from '@hatiolab/things-scene'
+import { Component, ValueHolder, RectPath, error } from '@hatiolab/things-scene'
 
-export default class GristAction extends ValueHolder(RectPath(Polygon)) {
+export default class GristAction extends ValueHolder(RectPath(Component)) {
   static get nature() {
     return NATURE
   }
@@ -60,8 +59,17 @@ export default class GristAction extends ValueHolder(RectPath(Polygon)) {
   }
 
   onclick(e) {
+    this.doAction()
+  }
+
+  onchange(after, before) {
+    if('value' in after) this.doAction()
+  }
+
+  doAction() {
     var { action } = this.state
-    var { element: grist } = this.targetGrist
+    var { element: grist } = this.targetGrist || {}
+    if (!grist) return
 
     switch (action) {
       case ACTIONS.COMMIT:
@@ -88,17 +96,15 @@ export default class GristAction extends ValueHolder(RectPath(Polygon)) {
       left,
       height,
       width,
-      backgroundColor = 'transparent',
-      reverse                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+      fillStyle = 'transparent',
+      reverse
     } = this.model
-
-    this.animOnValueChange(this.value)
 
     // background의 색상
     context.beginPath()
     context.rect(left, top, width, height)
 
-    context.fillStyle = backgroundColor
+    context.fillStyle = fillStyle
     context.fill()
 
     // value의 색상
