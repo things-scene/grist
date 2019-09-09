@@ -29,14 +29,18 @@ const NATURE = {
           {
             display: 'Get dirty rows',
             value: 'getDirtyRows'
+          },
+          {
+            display: 'Add a row',
+            value: 'addRow'
           }
         ]
       }
     },
     {
-      type: 'string',
-      label: 'value',
-      name: 'value'
+      type: 'textarea',
+      label: 'record-format',
+      name: 'recordFormat'
     }
   ]
 }
@@ -44,7 +48,8 @@ const NATURE = {
 export const ACTIONS = {
   COMMIT: 'commit',
   GET_SELECTED: 'getSelectedRows',
-  GET_DIRTY: 'getDirtyRows'
+  GET_DIRTY: 'getDirtyRows',
+  ADD_ROW: 'addRow'
 }
 
 import { Component, ValueHolder, RectPath, error } from '@hatiolab/things-scene'
@@ -63,7 +68,7 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
   }
 
   onchange(after, before) {
-    if('value' in after) this.doAction()
+    if ('value' in after) this.doAction()
   }
 
   doAction() {
@@ -86,6 +91,17 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
           timestamp: new Date(),
           records: grist.dirtyRecords
         })
+        break
+      case ACTIONS.ADD_ROW:
+        var { records } = grist.data
+
+        var recordFormat = {}
+        try {
+          recordFormat = JSON.parse(this.state.recordFormat)
+        } catch (e) {}
+
+        records = [...records, { ...recordFormat, __dirty__: '+' }]
+        grist.data = { ...grist.data, records }
         break
     }
   }
