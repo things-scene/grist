@@ -2,6 +2,14 @@
  * Copyright © HatioLab Inc. All rights reserved.
  */
 
+export const ACTIONS = {
+  GET_ALL_ROWS: 'getAllRows',
+  COMMIT: 'commit',
+  GET_SELECTED: 'getSelectedRows',
+  GET_DIRTY: 'getDirtyRows',
+  ADD_ROW: 'addRow'
+}
+
 const NATURE = {
   mutable: false,
   resizable: true,
@@ -19,20 +27,24 @@ const NATURE = {
       property: {
         options: [
           {
-            display: 'Commit',
-            value: 'commit'
+            display: 'Get all rows',
+            value: ACTIONS.GET_ALL_ROWS
           },
           {
             display: 'Get selected rows',
-            value: 'getSelectedRows'
+            value: ACTIONS.GET_SELECTED
           },
           {
             display: 'Get dirty rows',
-            value: 'getDirtyRows'
+            value: ACTIONS.GET_DIRTY
           },
           {
             display: 'Add a row',
-            value: 'addRow'
+            value: ACTIONS.ADD_ROW
+          },
+          {
+            display: 'Commit',
+            value: ACTIONS.COMMIT
           }
         ]
       }
@@ -43,13 +55,6 @@ const NATURE = {
       name: 'recordFormat'
     }
   ]
-}
-
-export const ACTIONS = {
-  COMMIT: 'commit',
-  GET_SELECTED: 'getSelectedRows',
-  GET_DIRTY: 'getDirtyRows',
-  ADD_ROW: 'addRow'
 }
 
 import { Component, ValueHolder, RectPath, error } from '@hatiolab/things-scene'
@@ -77,6 +82,12 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
     if (!grist) return
 
     switch (action) {
+      case ACTIONS.GET_ALL_ROWS:
+        this.set('data', {
+          ...grist.data,
+          timestamp: new Date()
+        })
+        break
       case ACTIONS.COMMIT:
         grist.commit()
         break
