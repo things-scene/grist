@@ -7,7 +7,8 @@ export const ACTIONS = {
   COMMIT: 'commit',
   GET_SELECTED: 'getSelectedRows',
   GET_DIRTY: 'getDirtyRows',
-  ADD_ROW: 'addRow'
+  ADD_ROW: 'addRow',
+  GET_PAGE_INFO: 'getPageInfo'
 }
 
 const NATURE = {
@@ -26,6 +27,10 @@ const NATURE = {
       name: 'action',
       property: {
         options: [
+          {
+            display: 'Get page information',
+            value: ACTIONS.GET_PAGE_INFO
+          },
           {
             display: 'Get all rows',
             value: ACTIONS.GET_ALL_ROWS
@@ -113,6 +118,10 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
 
         records = [...records, { ...recordFormat, __dirty__: '+' }]
         grist.data = { ...grist.data, records }
+        break
+      case ACTIONS.GET_PAGE_INFO:
+        var { page, limit } = grist.data
+        this.set('data', { page, limit })
         break
     }
   }
