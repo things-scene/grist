@@ -25,11 +25,25 @@ import { Component, HTMLOverlayElement, error } from '@hatiolab/things-scene'
 import '@things-factory/grist-ui'
 
 export default class Grist extends HTMLOverlayElement {
+  constructor(...args) {
+    super(...args)
+    this.beforeFetchFuncs = {}
+  }
   static get nature() {
     return NATURE
   }
 
   oncreate_element(grist) {
+    grist.fetchHandler = ({ page, limit, sorters, options }) => {
+      Object.values(this.beforeFetchFuncs).forEach(func => func({ page, limit, sorters, options }))
+      var { total = 0, records = [] } = grist.data
+      return {
+        page,
+        limit,
+        total,
+        records
+      }
+    }
     this.data = {
       total: 100,
       records: Array(100)
@@ -64,19 +78,12 @@ export default class Grist extends HTMLOverlayElement {
     var { mode } = this.state
     grist.mode = mode
     grist.config = this.config
-    grist.fetchHandler = function({ page, limit, sorters, options }) {
-      return {
-        page,
-        limit,
-        total: grist.data.total,
-        records: grist.data.records
-      }
-    }
+
     grist.data =
       this.data instanceof Array
         ? {
             total: this.data.length,
-            records: this.data
+            records: Array.from(this.data)
           }
         : this.data
   }

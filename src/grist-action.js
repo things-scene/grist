@@ -1,6 +1,7 @@
 /*
  * Copyright © HatioLab Inc. All rights reserved.
  */
+import uuid from 'uuid'
 
 export const ACTIONS = {
   GET_ALL_ROWS: 'getAllRows',
@@ -65,8 +66,18 @@ const NATURE = {
 import { Component, ValueHolder, RectPath, error } from '@hatiolab/things-scene'
 
 export default class GristAction extends ValueHolder(RectPath(Component)) {
+  constructor(...args) {
+    super(...args)
+
+    this.uuid = uuid.v4()
+  }
+
   static get nature() {
     return NATURE
+  }
+
+  ready() {
+    this.onchange({ action: this.state.action })
   }
 
   dispose() {
@@ -79,10 +90,19 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
 
   onchange(after, before) {
     if ('value' in after) this.doAction()
+    if ('action' in after && this.targetGrist) {
+      if (after.action == ACTIONS.GET_PAGE_INFO)
+        this.targetGrist.beforeFetchFuncs[uuid] = fetchedData => {
+          this.getPageInfo(null, fetchedData)
+        }
+      else delete this.targetGrist.beforeFetchFuncs[uuid]
+    }
   }
 
-  doAction() {
-    var { action } = this.state
+  doAction(action) {
+    var { action: storedAction } = this.state
+    action = action || storedAction
+
     var { element: grist } = this.targetGrist || {}
     if (!grist) return
 
@@ -120,10 +140,15 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
         grist.data = { ...grist.data, records }
         break
       case ACTIONS.GET_PAGE_INFO:
-        var { page, limit } = grist.data
-        this.set('data', { page, limit })
+        this.getPageInfo(grist)
         break
     }
+  }
+
+  getPageInfo(grist, fetchedData) {
+    var { page, limit, sorters } =
+      fetchedData || (grist && grist.dataProvider) || {}
+    this.set('data', { page, limit, sorters, timestamp: new Date() })
   }
 
   render(context) {
