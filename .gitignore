@@ -9,3 +9,5 @@ dist-client
 *.report.html
 licenses/*.js
 db.sqlite
+yarn.lock
+dist

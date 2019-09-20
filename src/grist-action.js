@@ -93,7 +93,7 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
     if ('action' in after && this.targetGrist) {
       if (after.action == ACTIONS.GET_PAGE_INFO)
         this.targetGrist.beforeFetchFuncs[uuid] = fetchedData => {
-          this.getPageInfo(null, fetchedData)
+          this.set('data', this.getPageInfo(null, fetchedData))
         }
       else delete this.targetGrist.beforeFetchFuncs[uuid]
     }
@@ -123,32 +123,52 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
         })
         break
       case ACTIONS.GET_DIRTY:
-        this.set('data', {
-          timestamp: new Date(),
-          records: grist.dirtyRecords
-        })
+        this.set('data', this.assortDirties(grist))
         break
       case ACTIONS.ADD_ROW:
-        var { records } = grist.data
+        {
+          let { records } = grist.data
 
-        var recordFormat = {}
-        try {
-          recordFormat = JSON.parse(this.state.recordFormat)
-        } catch (e) {}
+          let recordFormat = {}
+          try {
+            recordFormat = JSON.parse(this.state.recordFormat)
+          } catch (e) {}
 
-        records = [...records, { ...recordFormat, __dirty__: '+' }]
-        grist.data = { ...grist.data, records }
+          records = [...records, { ...recordFormat, __dirty__: '+' }]
+          grist.data = { ...grist.data, records }
+        }
         break
       case ACTIONS.GET_PAGE_INFO:
-        this.getPageInfo(grist)
+        this.set('data', this.getPageInfo(grist))
         break
     }
+  }
+
+  assortDirties(grist, dirties) {
+    dirties = dirties || grist.dirtyRecords
+    var records = {
+      original: dirties,
+      created: [],
+      updated: [],
+      deleted: []
+    }
+    dirties.forEach(record => {
+      switch (record['__dirty__']) {
+        case 'M':
+          records.updated.push(record)
+          break
+        case '+':
+          records.created.push(record)
+          break
+      }
+    })
+    return { timestamp: new Date(), records }
   }
 
   getPageInfo(grist, fetchedData) {
     var { page, limit, sorters } =
       fetchedData || (grist && grist.dataProvider) || {}
-    this.set('data', { page, limit, sorters, timestamp: new Date() })
+    return { records: { page, limit, sorters }, timestamp: new Date() }
   }
 
   render(context) {
