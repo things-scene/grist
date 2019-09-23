@@ -34,8 +34,15 @@ export default class Grist extends HTMLOverlayElement {
   }
 
   oncreate_element(grist) {
+  }
+
+  ready() {
+    super.ready()
+    var grist = this.element
     grist.fetchHandler = ({ page, limit, sorters, options }) => {
-      Object.values(this.beforeFetchFuncs).forEach(func => func({ page, limit, sorters, options }))
+      Object.values(this.beforeFetchFuncs).forEach(func =>
+        func({ page, limit, sorters, options })
+      )
       var { total = 0, records = [] } = grist.data
       return {
         page,
@@ -43,24 +50,6 @@ export default class Grist extends HTMLOverlayElement {
         total,
         records
       }
-    }
-    this.data = {
-      total: 100,
-      records: Array(100)
-        .fill()
-        .map((item, idx) => {
-          return {
-            id: idx,
-            name: idx % 2 ? `shnam-${idx + 1}` : `heartyoh-${idx + 1}`,
-            description:
-              idx % 2
-                ? `hatiolab manager-${idx + 1}`
-                : `hatiosea manager-${idx + 1}`,
-            active: Math.round(Math.random() * 2) % 2 ? true : false,
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-          }
-        })
     }
   }
 
