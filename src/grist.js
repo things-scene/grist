@@ -43,7 +43,7 @@ export default class Grist extends HTMLOverlayElement {
       Object.values(this.beforeFetchFuncs).forEach(func =>
         func({ page, limit, sorters, options })
       )
-      var { total = 0, records = [] } = grist.data
+      var { total = 0, records = [] } = grist.data || {}
       return {
         page,
         limit,

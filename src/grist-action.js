@@ -92,10 +92,10 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
     if ('value' in after) this.doAction()
     if ('action' in after && this.targetGrist) {
       if (after.action == ACTIONS.GET_PAGE_INFO)
-        this.targetGrist.beforeFetchFuncs[uuid] = fetchedData => {
+        this.targetGrist.beforeFetchFuncs[this.uuid] = fetchedData => {
           this.set('data', this.getPageInfo(null, fetchedData))
         }
-      else delete this.targetGrist.beforeFetchFuncs[uuid]
+      else delete this.targetGrist.beforeFetchFuncs[this.uuid]
     }
   }
 
@@ -127,15 +127,18 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
         break
       case ACTIONS.ADD_ROW:
         {
-          let { records } = grist.data
+          var records = grist.dirtyData.records || []
 
-          let recordFormat = {}
+          let recordFormat
           try {
             recordFormat = JSON.parse(this.state.recordFormat)
-          } catch (e) {}
+          } catch (e) {
+            console.log('Invalid JSON format. It will be assumed as empty object.\n', e)
+            recordFormat = {}
+          }
 
-          records = [...records, { ...recordFormat, __dirty__: '+' }]
-          grist.data = { ...grist.data, records }
+          records.push({ ...recordFormat, __dirty__: '+' })
+          this.targetGrist.set('data', { ...grist.data, records })
         }
         break
       case ACTIONS.GET_PAGE_INFO:
