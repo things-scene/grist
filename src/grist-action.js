@@ -9,6 +9,7 @@ export const ACTIONS = {
   GET_SELECTED: 'getSelectedRows',
   GET_DIRTY: 'getDirtyRows',
   ADD_ROW: 'addRow',
+  DELETE_SELECTED_ROWS: 'deleteSelectedRowsSoftly',
   GET_PAGE_INFO: 'getPageInfo'
 }
 
@@ -47,6 +48,10 @@ const NATURE = {
           {
             display: 'Add a row',
             value: ACTIONS.ADD_ROW
+          },
+          {
+            display: 'Delete selected rows',
+            value: ACTIONS.DELETE_SELECTED_ROWS
           },
           {
             display: 'Commit',
@@ -133,12 +138,25 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
           try {
             recordFormat = JSON.parse(this.state.recordFormat)
           } catch (e) {
-            console.log('Invalid JSON format. It will be assumed as empty object.\n', e)
+            console.log(
+              'Invalid JSON format. It will be assumed as empty object.\n',
+              e
+            )
             recordFormat = {}
           }
 
           records.push({ ...recordFormat, __dirty__: '+' })
-          this.targetGrist.set('data', { ...grist.data, records })
+          grist.refresh()
+        }
+        break
+      case ACTIONS.DELETE_SELECTED_ROWS:
+        {
+          var records = grist.dirtyData.records || []
+
+          records.forEach(record => {
+            if (record['__selected__']) record['__dirty__'] = '-'
+          })
+          grist.refresh()
         }
         break
       case ACTIONS.GET_PAGE_INFO:
@@ -162,6 +180,9 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
           break
         case '+':
           records.created.push(record)
+          break
+        case '-':
+          records.deleted.push(record)
           break
       }
     })
