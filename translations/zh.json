@@ -1,3 +1,5 @@
 {
-  "keyword": "keyword"
+  "keyword": "keyword",
+  "label.config": "config",
+  "label.action": "action"
 }
