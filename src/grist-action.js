@@ -105,6 +105,7 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
   }
 
   doAction(action) {
+    if (!this.app.isViewMode) return
     var { action: storedAction } = this.state
     action = action || storedAction
 
@@ -136,7 +137,7 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
 
           let recordFormat
           try {
-            recordFormat = JSON.parse(this.state.recordFormat)
+            recordFormat = eval(`(${this.state.recordFormat})`)
           } catch (e) {
             console.log(
               'Invalid JSON format. It will be assumed as empty object.\n',
