@@ -145,9 +145,8 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
             )
             recordFormat = {}
           }
-
           records.push({ ...recordFormat, __dirty__: '+' })
-          grist.refresh()
+          this.refreshGrist()
         }
         break
       case ACTIONS.DELETE_SELECTED_ROWS:
@@ -157,13 +156,20 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
           records.forEach(record => {
             if (record['__selected__']) record['__dirty__'] = '-'
           })
-          grist.refresh()
+          this.refreshGrist()
         }
         break
       case ACTIONS.GET_PAGE_INFO:
         this.set('data', this.getPageInfo(grist))
         break
     }
+  }
+
+  refreshGrist(grist) {
+    grist = grist || (this.targetGrist && this.targetGrist.element)
+    if (!grist) return
+    grist.dataProvider.onRecordChange()
+    grist.grist.data = { ...grist.dirtyData }
   }
 
   assortDirties(grist, dirties) {
