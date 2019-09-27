@@ -99,6 +99,7 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
       if (after.action == ACTIONS.GET_PAGE_INFO)
         this.targetGrist.beforeFetchFuncs[this.uuid] = fetchedData => {
           this.set('data', this.getPageInfoFrom(null, fetchedData))
+          this.executeMappings()
         }
       else delete this.targetGrist.beforeFetchFuncs[this.uuid]
     }
@@ -112,24 +113,19 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
     var { element: grist } = this.targetGrist || {}
     if (!grist) return
 
+    var data
     switch (action) {
       case ACTIONS.GET_ALL_ROWS:
-        this.set('data', {
-          ...grist.data,
-          timestamp: new Date()
-        })
+        data = grist.grist.data
         break
       case ACTIONS.COMMIT:
         grist.commit()
         break
       case ACTIONS.GET_SELECTED:
-        this.set('data', {
-          timestamp: new Date(),
-          records: grist.selected
-        })
+        data = grist.selected
         break
       case ACTIONS.GET_DIRTY:
-        this.set('data', this.assortDirties(grist))
+        data = this.assortDirties(grist)
         break
       case ACTIONS.ADD_ROW:
         {
@@ -164,8 +160,13 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
         }
         break
       case ACTIONS.GET_PAGE_INFO:
-        this.set('data', this.getPageInfoFrom(grist))
+        data = this.getPageInfoFrom(grist)
         break
+    }
+
+    if (data) {
+      this.set('data', data)
+      this.executeMappings()
     }
   }
 
@@ -197,7 +198,7 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
           break
       }
     })
-    return { timestamp: new Date(), records }
+    return records
   }
 
   getPageInfoFrom(grist, fetchedData) {
@@ -207,7 +208,8 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
       sorter.desc = sorter.desc ? true : false
       return sorter
     })
-    return { records: { page, limit, sorters }, timestamp: new Date() }
+    // return { records: { page, limit, sorters }, timestamp: new Date() }
+    return { page, limit, sorters }
   }
 
   render(context) {
