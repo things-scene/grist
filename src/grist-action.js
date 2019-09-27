@@ -153,9 +153,13 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
         {
           var records = grist.dirtyData.records || []
 
-          records.forEach(record => {
-            if (record['__selected__']) record['__dirty__'] = '-'
+          records.forEach((record, idx) => {
+            if (record['__selected__']) {
+              if (record['__dirty__'] == '+') delete records[idx]
+              else record['__dirty__'] = '-'
+            }
           })
+          grist.dirtyData.records = records.flat()
           this.refreshGrist()
         }
         break
