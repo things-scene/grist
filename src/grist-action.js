@@ -98,7 +98,7 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
     if ('action' in after && this.targetGrist) {
       if (after.action == ACTIONS.GET_PAGE_INFO)
         this.targetGrist.beforeFetchFuncs[this.uuid] = fetchedData => {
-          this.set('data', this.getPageInfo(null, fetchedData))
+          this.set('data', this.getPageInfoFrom(null, fetchedData))
         }
       else delete this.targetGrist.beforeFetchFuncs[this.uuid]
     }
@@ -146,7 +146,7 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
             recordFormat = {}
           }
           records.push({ ...recordFormat, __dirty__: '+' })
-          this.refreshGrist()
+          this.refreshGrist(grist)
         }
         break
       case ACTIONS.DELETE_SELECTED_ROWS:
@@ -160,11 +160,11 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
             }
           })
           grist.dirtyData.records = records.flat()
-          this.refreshGrist()
+          this.refreshGrist(grist)
         }
         break
       case ACTIONS.GET_PAGE_INFO:
-        this.set('data', this.getPageInfo(grist))
+        this.set('data', this.getPageInfoFrom(grist))
         break
     }
   }
@@ -200,9 +200,13 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
     return { timestamp: new Date(), records }
   }
 
-  getPageInfo(grist, fetchedData) {
-    var { page, limit, sorters } =
+  getPageInfoFrom(grist, fetchedData) {
+    var { page, limit, sorters = [] } =
       fetchedData || (grist && grist.dataProvider) || {}
+    sorters = sorters.map(sorter => {
+      sorter.desc = sorter.desc ? true : false
+      return sorter
+    })
     return { records: { page, limit, sorters }, timestamp: new Date() }
   }
 
