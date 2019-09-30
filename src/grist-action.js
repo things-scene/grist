@@ -208,7 +208,6 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
       sorter.desc = sorter.desc ? true : false
       return sorter
     })
-    // return { records: { page, limit, sorters }, timestamp: new Date() }
     return { page, limit, sorters }
   }
 
