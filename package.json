@@ -20,6 +20,7 @@
     "@things-factory/board-app": "*",
     "@things-factory/board-test": "*",
     "@things-scene/form": "*",
+    "@things-scene/graphql": "*",
     "@things-scene/random": "*",
     "@things-scene/restful": "*",
     "@things-scene/table": "*"
