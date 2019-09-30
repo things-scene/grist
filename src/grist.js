@@ -27,6 +27,7 @@ import '@things-factory/grist-ui'
 export default class Grist extends HTMLOverlayElement {
   constructor(...args) {
     super(...args)
+    this.__data = {}
     this.beforeFetchFuncs = {}
   }
   static get nature() {
@@ -34,11 +35,6 @@ export default class Grist extends HTMLOverlayElement {
   }
 
   oncreate_element(grist) {
-  }
-
-  ready() {
-    super.ready()
-    var grist = this.element
     grist.fetchHandler = ({ page, limit, sorters, options }) => {
       Object.values(this.beforeFetchFuncs).forEach(func =>
         func({ page, limit, sorters, options })
@@ -51,6 +47,26 @@ export default class Grist extends HTMLOverlayElement {
         records
       }
     }
+  }
+
+  get data() {
+    return this.__data
+  }
+
+  set data(data) {
+    this.__data = data
+    if (!typeof data == 'object') return
+    this.element.data =
+      data instanceof Array
+        ? {
+            ...this.element._data,
+            total: data.length,
+            records: Array.from(data)
+          }
+        : {
+          ...this.element._data,
+          ...data
+        }
   }
 
   dispose() {
@@ -67,14 +83,6 @@ export default class Grist extends HTMLOverlayElement {
     var { mode } = this.state
     grist.mode = mode
     grist.config = this.config
-
-    grist.data =
-      this.data instanceof Array
-        ? {
-            total: this.data.length,
-            records: Array.from(this.data)
-          }
-        : this.data
   }
 
   /*
