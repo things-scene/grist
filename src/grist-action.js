@@ -61,6 +61,11 @@ const NATURE = {
       }
     },
     {
+      type: 'checkbox',
+      label: 'run-at-startup',
+      name: 'runAtStartup'
+    },
+    {
       type: 'textarea',
       label: 'record-format',
       name: 'recordFormat'
@@ -69,6 +74,8 @@ const NATURE = {
 }
 
 import { Component, ValueHolder, RectPath, error } from '@hatiolab/things-scene'
+import { getConfigFileParsingDiagnostics } from 'typescript'
+import { func } from 'prop-types'
 
 export default class GristAction extends ValueHolder(RectPath(Component)) {
   constructor(...args) {
@@ -83,6 +90,7 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
 
   ready() {
     this.onchange({ action: this.state.action })
+    if (this.state.runAtStartup) this.doAction()
   }
 
   dispose() {
@@ -202,13 +210,24 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
   }
 
   getPageInfoFrom(grist, fetchedData) {
-    var { page, limit, sorters = [] } =
-      fetchedData || (grist && grist.dataProvider) || {}
+    var { page = 1, limit = 20, sorters = [] } =
+      fetchedData || (grist && grist.dataProvider) || pagination(grist)
+
     sorters = sorters.map(sorter => {
       sorter.desc = sorter.desc ? true : false
       return sorter
     })
     return { page, limit, sorters }
+
+    function pagination(grist) {
+      var config = grist && grist.config && grist.config.pagination
+      if (config)
+        return {
+          page: config.page,
+          limit: config.limit || (config.pages && config.pages[0])
+        }
+      else return {}
+    }
   }
 
   render(context) {

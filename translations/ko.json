@@ -1,5 +1,6 @@
 {
   "keyword": "키워드",
   "label.config": "설정",
-  "label.action": "동작"
+  "label.action": "동작",
+  "label.run-at-startup": "시작 시 실행"
 }

@@ -47,6 +47,7 @@ export default class Grist extends HTMLOverlayElement {
         records
       }
     }
+    grist.data = []
   }
 
   get data() {

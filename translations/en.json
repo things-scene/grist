@@ -1,5 +1,6 @@
 {
   "keyword": "keyword",
   "label.config": "config",
-  "label.action": "action"
+  "label.action": "action",
+  "label.run-at-startup": "run at startup"
 }
