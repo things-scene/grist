@@ -8,9 +8,25 @@ const NATURE = {
   rotatable: true,
   properties: [
     {
-      type: 'string',
+      type: 'select',
       label: 'mode',
-      name: 'mode'
+      name: 'mode',
+      property: {
+        options: [
+          {
+            display: 'Grid',
+            value: 'GRID'
+          },
+          {
+            display: 'List',
+            value: 'LIST'
+          },
+          {
+            display: 'Depends on device',
+            value: 'DEVICE'
+          }
+        ]
+      }
     },
     {
       type: 'textarea',
@@ -20,6 +36,7 @@ const NATURE = {
   ]
 }
 
+import { isMobileDevice } from '@things-factory/shell'
 import { Component, HTMLOverlayElement, error } from '@hatiolab/things-scene'
 
 import '@things-factory/grist-ui'
@@ -65,9 +82,9 @@ export default class Grist extends HTMLOverlayElement {
             records: Array.from(data)
           }
         : {
-          ...this.element._data,
-          ...data
-        }
+            ...this.element._data,
+            ...data
+          }
   }
 
   dispose() {
@@ -82,7 +99,10 @@ export default class Grist extends HTMLOverlayElement {
    */
   setElementProperties(grist) {
     var { mode } = this.state
-    grist.mode = mode
+    if (mode != 'DEVICE') grist.mode = mode
+    else {
+      grist.mode = isMobileDevice() ? 'LIST' : 'GRID'
+    }
     grist.config = this.config
   }
 
@@ -104,7 +124,13 @@ export default class Grist extends HTMLOverlayElement {
         scene.error(e)
       }
     }
-
+    if (
+      config.pagination &&
+      !config.pagination.limit &&
+      config.pagination.pages &&
+      config.pagination.pages.length
+    )
+      config.pagination.limit = config.pagination.pages[0]
     return config
   }
 
