@@ -73,9 +73,7 @@ const NATURE = {
   ]
 }
 
-import { Component, ValueHolder, RectPath, error } from '@hatiolab/things-scene'
-import { getConfigFileParsingDiagnostics } from 'typescript'
-import { func } from 'prop-types'
+import { Component, ValueHolder, RectPath } from '@hatiolab/things-scene'
 
 export default class GristAction extends ValueHolder(RectPath(Component)) {
   constructor(...args) {
@@ -97,11 +95,11 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
     super.dispose()
   }
 
-  onclick(e) {
+  onclick() {
     this.doAction()
   }
 
-  onchange(after, before) {
+  onchange(after) {
     if ('value' in after) this.doAction()
     if ('action' in after && this.targetGrist) {
       if (after.action == ACTIONS.GET_PAGE_INFO)
@@ -231,14 +229,7 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
   }
 
   render(context) {
-    var {
-      top,
-      left,
-      height,
-      width,
-      fillStyle = 'transparent',
-      reverse
-    } = this.model
+    var { top, left, height, width, fillStyle = 'transparent' } = this.model
 
     // background의 색상
     context.beginPath()
