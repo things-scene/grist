@@ -104,7 +104,7 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
     if ('action' in after && this.targetGrist) {
       if (after.action == ACTIONS.GET_PAGE_INFO)
         this.targetGrist.beforeFetchFuncs[this.uuid] = fetchedData => {
-          this.set('data', this.getPageInfoFrom(null, fetchedData))
+          this.data = this.getPageInfoFrom(null, fetchedData)
           this.executeMappings()
         }
       else delete this.targetGrist.beforeFetchFuncs[this.uuid]
@@ -171,7 +171,7 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
     }
 
     if (data) {
-      this.set('data', data)
+      this.data = data
       this.executeMappings()
     }
   }
@@ -266,6 +266,14 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
   get targetGrist() {
     var { target } = this.state
     return this.root.findById(target)
+  }
+
+  get data() {
+    return this._data
+  }
+
+  set data(data) {
+    this._data = data
   }
 }
 
