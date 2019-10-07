@@ -105,10 +105,22 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
       if (after.action == ACTIONS.GET_PAGE_INFO)
         this.targetGrist.beforeFetchFuncs[this.uuid] = fetchedData => {
           this.data = this.getPageInfoFrom(null, fetchedData)
-          this.executeMappings()
+          this.doDataMap()
         }
       else delete this.targetGrist.beforeFetchFuncs[this.uuid]
     }
+  }
+
+  // 데이터 매핑을 수동으로 실행하기 위해 기존의 메소드를 무효화
+  executeMappings() {
+    console.log(
+      "The method 'executingMappings' is overriden in the component 'grist-action', because of to prevent executing when initialize."
+    )
+  }
+
+  // 데이터 매핑을 수동으로 조작하기 위한 새 메소드
+  doDataMap() {
+    super.executeMappings()
   }
 
   doAction(action) {
@@ -172,7 +184,7 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
 
     if (data) {
       this.data = data
-      this.executeMappings()
+      this.doDataMap()
     }
   }
 
