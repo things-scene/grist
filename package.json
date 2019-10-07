@@ -1,7 +1,7 @@
 {
   "name": "@things-scene/grist",
   "description": "grist component for things-scene",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "things-scene": true,
   "main": "src/index.js",
   "module": "dist/things-scene-grist.mjs",
