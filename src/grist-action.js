@@ -113,8 +113,8 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
 
   // 데이터 매핑을 수동으로 실행하기 위해 기존의 메소드를 무효화
   executeMappings() {
-    console.log(
-      "The method 'executingMappings' is overriden in the component 'grist-action', because of to prevent executing when initialize."
+    console.debug(
+      "[@things-factory/grist] The method 'executeMappings' is overriden in the component 'grist-action', because of to prevent executing when initialize."
     )
   }
 
