@@ -64,7 +64,6 @@ export default class Grist extends HTMLOverlayElement {
         records
       }
     }
-    grist.data = []
   }
 
   get data() {
@@ -74,14 +73,19 @@ export default class Grist extends HTMLOverlayElement {
   set data(data) {
     this.__data = data
     if (!typeof data == 'object') return
+    var { page, limit } = this.config.pagination || {}
     this.element.data =
       data instanceof Array
         ? {
+            page,
+            limit,
             ...this.element._data,
             total: data.length,
             records: Array.from(data)
           }
         : {
+            page,
+            limit,
             ...this.element._data,
             ...data
           }
