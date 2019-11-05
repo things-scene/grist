@@ -9,7 +9,7 @@ const NATURE = {
   properties: [
     {
       type: 'select',
-      label: 'mode',
+      label: 'grist-mode',
       name: 'mode',
       property: {
         options: [

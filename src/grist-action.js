@@ -22,9 +22,12 @@ const NATURE = {
   properties: [
     {
       // 대상 Grist
-      type: 'string',
-      label: 'target',
-      name: 'target'
+      type: 'id-input',
+      label: 'target-grist',
+      name: 'target',
+      property: {
+        component: 'grist'
+      }
     },
     {
       // 동작
@@ -80,7 +83,7 @@ const NATURE = {
     {
       // 행 추가 시의 포맷
       type: 'textarea',
-      label: 'record-format',
+      label: 'record-adder-format',
       name: 'recordFormat'
     }
   ]

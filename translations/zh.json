@@ -1,6 +1,9 @@
 {
   "keyword": "keyword",
+  "label.grist-mode": "mode",
+  "label.target-grist": "target grist",
   "label.config": "config",
   "label.action": "action",
-  "label.run-at-startup": "run at startup"
+  "label.run-at-startup": "run at startup",
+  "label.record-adder-format": "Default when adding row"
 }

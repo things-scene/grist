@@ -1,6 +1,9 @@
 {
   "keyword": "키워드",
+  "label.grist-mode": "형태",
+  "label.target-grist": "대상 grist",
   "label.config": "설정",
   "label.action": "동작",
-  "label.run-at-startup": "시작 시 실행"
+  "label.run-at-startup": "시작 시 실행",
+  "label.record-adder-format": "행 추가 시 초기값"
 }
