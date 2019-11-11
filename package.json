@@ -17,8 +17,8 @@
     "migration": "things-factory-migration"
   },
   "devDependencies": {
-    "@things-factory/board-app": "*",
-    "@things-factory/board-test": "*",
+    "@things-factory/board-app": "^1.0.0-alpha.1",
+    "@things-factory/board-test": "^1.0.0-alpha.1",
     "@things-scene/form": "*",
     "@things-scene/graphql": "*",
     "@things-scene/random": "*",
@@ -27,6 +27,6 @@
   },
   "dependencies": {
     "@hatiolab/things-scene": "*",
-    "@things-factory/grist-ui": "*"
+    "@things-factory/grist-ui": "^1.0.0-alpha.1"
   }
 }
