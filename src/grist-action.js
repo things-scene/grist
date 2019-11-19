@@ -236,7 +236,7 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
       deleted: []
     }
     patches.forEach(record => {
-      switch (record['__dirty__']) {
+      switch (record['cuFlag']) {
         case 'M':
           records.updated.push(record)
           break
