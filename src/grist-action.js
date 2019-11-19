@@ -164,7 +164,10 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
         grist.commit()
         break
       case ACTIONS.GET_SELECTED:
-        data = grist.selected
+        data = {
+          patches: this.buildPatches(grist.selected),
+          original: grist.selected
+        }
         break
       case ACTIONS.GET_DIRTY:
         data = this.assortDirties(grist)
@@ -224,13 +227,15 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
   // 변경 사항이 있는 레코드의 경우, CUD를 분류해서 반환함
   assortDirties(grist, dirties) {
     dirties = dirties || grist.dirtyRecords
+    var patches = this.buildPatches(dirties)
     var records = {
       original: dirties,
+      patches,
       created: [],
       updated: [],
       deleted: []
     }
-    dirties.forEach(record => {
+    patches.forEach(record => {
       switch (record['__dirty__']) {
         case 'M':
           records.updated.push(record)
@@ -266,6 +271,20 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
         }
       else return {}
     }
+  }
+
+  // 레코드들을 서버 공통 resolver에 맞는 포맷으로 만듦
+  buildPatches(patches) {
+    return patches.map(patch => {
+      let patchField = patch.id ? { id: patch.id } : {}
+      const dirtyFields = patch.__dirtyfields__
+      for (let key in dirtyFields) {
+        patchField[key] = dirtyFields[key].after
+      }
+      patchField.cuFlag = patch.__dirty__
+
+      return patchField
+    })
   }
 
   render(context) {
