@@ -1,0 +1,47 @@
+body {
+  --report-background-color: var(--main-section-background-color);
+  --report-padding: 15px;
+  --report-title-margin: 0 0 0 10px;
+  --report-title-border: none;
+  --report-title-color: var(--secondary-color);
+  --report-title-icon-color: var(--primary-color);
+  --report-title-icon-margin: 0 3px 2px 0;
+  --report-title-icon-size: 14px;
+  --report-title-with-grid-padding: 0;
+  --report-component-border-radius: var(--border-radius);
+
+  --report-header-background-color: rgba(18, 105, 105, 0.05);
+  --report-header-border: 1px solid var(--report-header-border-color);
+  --report-header-border-color: rgba(18, 105, 105, 0.3);
+  --report-header-padding: 5px 0 5px 5px;
+  --report-header-color: var(--secondary-text-color);
+  --report-header-font: normal 1em/1.5 var(--theme-font);
+  --report-header-fontsize: 13px;
+
+  --report-record-background-color: #fff;
+  --report-record-odd-background-color: #f6f6f6;
+  --report-record-field-padding: 7px 10px;
+  --report-record-field-border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  --report-record-wide-fontsize: 13px;
+  --report-record-focused-background-color: #ffde3b47;
+  --report-record-focused-border: 1px dashed rgba(0, 0, 0, 0.5);
+
+  --report-totalized-background-color: #efefef;
+  --report-totalized-border: 1px solid rgba(0, 0, 0, 0.1);
+  --report-totalized-color: var(--secondary-text-color);
+
+  --report-grouped-background-color: #607d8bbf;
+  --report-grouped-border: 1px solid rgba(0, 0, 0, 0.2);
+  --report-grouped-color: #fff;
+}
+
+@media print {
+  body {
+    --report-header-padding: 5px;
+    --report-record-field-padding: 5px;
+    --report-record-wide-fontsize: 10px;
+    --report-grouped-background-color: #d7d7d7;
+    --report-grouped-color: #000;
+    --report-totalized-color: #000;
+  }
+}

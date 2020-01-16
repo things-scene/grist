@@ -1,0 +1,106 @@
+const KEY_LEFT = 37
+const KEY_UP = 38
+const KEY_RIGHT = 39
+const KEY_DOWN = 40
+const KEY_ENTER = 13
+const KEY_TAP = 9
+const KEY_BACKSPACE = 8
+const KEY_ESC = 27
+const KEY_PAGEUP = 33
+const KEY_PAGEDOWN = 34
+
+/**
+ * data-grid-body 의 keydown handler
+ *
+ * - handler의 this 는 data-grid-body임.
+ */
+export async function dataGridBodyKeydownHandler(e) {
+  // arrow-key
+  var keyCode = e.keyCode
+  var { row = 0, column = 0 } = this.focused || {}
+  var { records = [] } = this.data || {}
+  var maxrow = this.config.rows.appendable ? records.length : records.length - 1
+  var maxcolumn = (this.columns || []).filter(column => !column.hidden).length - 1
+
+  if (this.editTarget) {
+    switch (keyCode) {
+      case KEY_ESC:
+      /* TODO 편집이 취소되어야 한다. */
+      case KEY_ENTER:
+        this.editTarget = null
+        this.focus()
+        return
+
+      // case KEY_TAP:
+      //   this.editTarget = null
+      //   column = Math.min(maxcolumn, column + 1)
+      //   this.focus()
+      //   break
+
+      // case KEY_DOWN:
+      //   this.editTarget = null
+      //   row = Math.min(maxrow, row + 1)
+      //   this.focus()
+      //   break
+
+      default:
+        return
+    }
+  } else {
+    switch (keyCode) {
+      case KEY_UP:
+        row = Math.max(0, row - 1)
+        break
+
+      case KEY_DOWN:
+        row = Math.min(maxrow, row + 1)
+        break
+
+      case KEY_ENTER:
+        this.startEditTarget(row, column)
+        return
+
+      case KEY_LEFT:
+      case KEY_BACKSPACE:
+        column = Math.max(0, column - 1)
+        break
+
+      case KEY_RIGHT:
+      case KEY_TAP:
+        column = Math.min(maxcolumn, column + 1)
+        break
+
+      case KEY_PAGEUP:
+        /* TODO 페이지당 레코드의 수를 계산해서 증감시켜야 한다. */
+        row = Math.max(0, row - 10)
+        break
+
+      case KEY_PAGEDOWN:
+        row = Math.min(maxrow, row + 10)
+        break
+
+      case KEY_ESC:
+        return
+
+      default:
+        if (
+          (keyCode > 47 && keyCode < 58) || // number keys
+          (keyCode == 32 || keyCode == 13) || // spacebar & return key(s) (if you want to allow carriage returns)
+          (keyCode > 64 && keyCode < 91) || // letter keys
+          (keyCode > 95 && keyCode < 112) || // numpad keys
+          (keyCode > 185 && keyCode < 193) || // ;=,-./` (in order)
+          (keyCode > 218 && keyCode < 223) // [\]' (in order)
+        ) {
+          this.startEditTarget(row, column)
+        }
+        return
+    }
+  }
+
+  if (!this.focused || this.focused.row !== row || this.focused.column !== column) {
+    this.focused = { row, column }
+  }
+
+  /* arrow key에 의한 scrollbar의 자동 움직임을 하지 못하도록 한다. */
+  e.preventDefault()
+}

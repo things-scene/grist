@@ -36,10 +36,10 @@ const NATURE = {
   ]
 }
 
-import { isMobileDevice } from '@things-factory/shell'
+import { isMobileDevice } from './shards/os'
 import { Component, HTMLOverlayElement, error } from '@hatiolab/things-scene'
 
-import '@things-factory/grist-ui'
+import './shards/grist'
 
 export default class Grist extends HTMLOverlayElement {
   constructor(...args) {
