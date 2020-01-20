@@ -180,10 +180,7 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
           try {
             recordFormat = eval(`(${this.state.recordFormat})`)
           } catch (e) {
-            console.log(
-              'Invalid JSON format. It will be assumed as empty object.\n',
-              e
-            )
+            console.log('Invalid JSON format. It will be assumed as empty object.\n', e)
             recordFormat = {}
           }
           records.push({ ...recordFormat, __dirty__: '+' })
@@ -253,8 +250,7 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
 
   // 페이지네이션 정보를 가져옴
   getPageInfoFrom(grist, fetchedData) {
-    var { page = 1, limit = 20, sorters = [] } =
-      fetchedData || (grist && grist.dataProvider) || pagination(grist)
+    var { page = 1, limit = 20, sorters = [] } = fetchedData || (grist && grist.dataProvider) || pagination(grist)
 
     sorters = sorters.map(sorter => {
       sorter.desc = sorter.desc ? true : false
@@ -300,8 +296,7 @@ export default class GristAction extends ValueHolder(RectPath(Component)) {
     // value의 색상
     context.beginPath()
 
-    var drawValue =
-      width - (width * Math.max(Math.min(this.animValue, 100), 0)) / 100
+    var drawValue = width - (width * Math.max(Math.min(this.animValue, 100), 0)) / 100
     drawValue = Math.max(Math.min(drawValue, width), 0)
 
     context.rect(left + drawValue, top, width - drawValue, height)

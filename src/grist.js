@@ -36,7 +36,7 @@ const NATURE = {
   ]
 }
 
-import { isMobileDevice } from '@things-factory/shell'
+import { isMobileDevice } from '@things-factory/utils'
 import { Component, HTMLOverlayElement, error } from '@hatiolab/things-scene'
 
 import '@things-factory/grist-ui'
@@ -53,9 +53,7 @@ export default class Grist extends HTMLOverlayElement {
 
   oncreate_element(grist) {
     grist.fetchHandler = ({ page, limit, sorters, options }) => {
-      Object.values(this.beforeFetchFuncs).forEach(func =>
-        func({ page, limit, sorters, options })
-      )
+      Object.values(this.beforeFetchFuncs).forEach(func => func({ page, limit, sorters, options }))
       var { total = 0, records = [] } = grist.data || {}
       return {
         page,
@@ -128,12 +126,7 @@ export default class Grist extends HTMLOverlayElement {
         scene.error(e)
       }
     }
-    if (
-      config.pagination &&
-      !config.pagination.limit &&
-      config.pagination.pages &&
-      config.pagination.pages.length
-    )
+    if (config.pagination && !config.pagination.limit && config.pagination.pages && config.pagination.pages.length)
       config.pagination.limit = config.pagination.pages[0]
     return config
   }
